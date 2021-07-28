@@ -1,5 +1,4 @@
 #requiring gem packages
-
 require 'open-uri'
 require 'nokogiri'
 require 'csv'
@@ -20,12 +19,17 @@ page = Nokogiri::HTML(URI.open(url))
 #each is a special ruby method along with do and line creates a loop
 #and the puts inside of it is what is in the loop
 #end finishes the loop
-# page.css('li.toclevel-3 span.toctext').each do |line|
-#   puts line.text
-# end
+page.css('li.toclevel-3 span.toctext').each do |line|
+  puts line.text
+end
 
-#creating variable name array
+page.css('td[style="text-align:left;"][3] a').each do |line|
+  puts line.text
+end
+
+#creating variable arrays
 name = []
+players = []
 
 # << symbol means to take line.text and add it to the name variable, so while it is in a loop
 # this will add the line.text to the array
@@ -33,16 +37,20 @@ page.css('li.toclevel-3 span.toctext').each do |line|
   name << line.text
 end
 
+page.css('td[style="text-align:left;"][3] a').each do |line|
+  players << line.text
+end
+
 #Write data to csv file
 #open a file called nab_teams...csv file in current folder or create it
 # store it in a variable called file, "w" is writing to the file
 CSV.open("nba_teams_listing.csv", "w") do |file|
   # creating column title
-  file << ["Team Name"]
+  file << ["Team Name", "Players"]
   # this is creating a times loop rather than an each
   #times is when we have a specific number in times to run the loop
-  name.length.times do |i|
+  players.length.times do |i|
     # adding new row of data for the nba team name into the csv file
-    file << [name[i]]
+    file << [name[i], players[i]]
   end
 end
